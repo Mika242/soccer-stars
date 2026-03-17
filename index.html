@@ -1049,14 +1049,14 @@ function bounce(o){
     if(o.y-o.r<FY){o.y=FY+o.r;o.vy=Math.abs(o.vy)*.75;}
     if(o.y+o.r>FY+FH){o.y=FY+FH-o.r;o.vy=-Math.abs(o.vy)*.75;}
     // Side walls — only block if NOT in goal zone
-    const inGoalZone=o.y>gy+o.r&&o.y<gy+GH-o.r;
+    const inGoalZone=o.y>gy&&o.y<gy+GH;
     if(o.x<FX&&!inGoalZone){o.x=FX+o.r;o.vx=Math.abs(o.vx)*.75;}
     if(o.x>FX+FW&&!inGoalZone){o.x=FX+FW-o.r;o.vx=-Math.abs(o.vx)*.75;}
     // Goal top/bottom walls (when ball enters goal area from side)
-    if(o.x<FX&&(o.y-o.r<gy)){o.y=gy+o.r;o.vy=Math.abs(o.vy)*.65;}
-    if(o.x<FX&&(o.y+o.r>gy+GH)){o.y=gy+GH-o.r;o.vy=-Math.abs(o.vy)*.65;}
-    if(o.x>FX+FW&&(o.y-o.r<gy)){o.y=gy+o.r;o.vy=Math.abs(o.vy)*.65;}
-    if(o.x>FX+FW&&(o.y+o.r>gy+GH)){o.y=gy+GH-o.r;o.vy=-Math.abs(o.vy)*.65;}
+    if(o.x<FX&&o.y<gy){o.y=gy+o.r;o.vy=Math.abs(o.vy)*.65;}
+    if(o.x<FX&&o.y>gy+GH){o.y=gy+GH-o.r;o.vy=-Math.abs(o.vy)*.65;}
+    if(o.x>FX+FW&&o.y<gy){o.y=gy+o.r;o.vy=Math.abs(o.vy)*.65;}
+    if(o.x>FX+FW&&o.y>gy+GH){o.y=gy+GH-o.r;o.vy=-Math.abs(o.vy)*.65;}
   } else {
     if(o.x<FXMN){o.x=FXMN;o.vx=Math.abs(o.vx)*.6;}
     if(o.x>FXMX){o.x=FXMX;o.vx=-Math.abs(o.vx)*.6;}
@@ -1077,9 +1077,9 @@ function step(){
 function checkGoal(){
   if(mOver)return false;
   const gy=FY+(FH-GH)/2;let scorer=-1;
-  // Ball must be fully past the goal line
-  if(ball.x+ball.r<FX-GD*.3&&ball.y>gy+ball.r&&ball.y<gy+GH-ball.r)scorer=1;
-  if(ball.x-ball.r>FX+FW+GD*.3&&ball.y>gy+ball.r&&ball.y<gy+GH-ball.r)scorer=0;
+  // Ball crosses the goal line (center of ball past the post)
+  if(ball.x<FX-2&&ball.y>gy&&ball.y<gy+GH)scorer=1;
+  if(ball.x>FX+FW+2&&ball.y>gy&&ball.y<gy+GH)scorer=0;
   if(scorer<0)return false;
   gameScore[scorer]++;
   document.getElementById('s1').textContent=gameScore[0];document.getElementById('s2').textContent=gameScore[1];
